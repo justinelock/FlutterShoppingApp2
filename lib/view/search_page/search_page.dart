@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/constant/app_border_radius.dart';
 import 'package:nectar_ui/core/extensions/context_extensions.dart';
@@ -11,6 +10,8 @@ import 'package:auto_route/auto_route.dart';
 import '../../../core/constant/app_constant.dart';
 import '../../core/helper/text_scale_size.dart';
 import '../../core/init/lang/locale_keys.g.dart';
+import '../../core/models/category.dart';
+import '../../core/models/query_snapshot.dart';
 import '../../core/services/firestore.dart';
 import '../../core/widgets/search_text_field.dart';
 
@@ -42,10 +43,9 @@ class _SearchPageState extends State<SearchPage> {
               hintText: LocaleKeys.search_search.locale,
             ),
             20.0.sizedBoxOnlyHeight,
-            StreamBuilder<QuerySnapshot>(
-                stream: FireCloudStore.category,
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
+            StreamBuilder<QuerySnapshot<Category>>(
+                stream: FireCloudStore.category(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Category>> snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
@@ -54,36 +54,33 @@ class _SearchPageState extends State<SearchPage> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  final data = snapshot.requireData;
+                  final List<Category> dataItems = snapshot.requireData.entities!;
                   return GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: context.screenWidth * 0.5,
-                        mainAxisExtent: context.screenHeight * 0.5 <= 200
-                            ? context.screenHeight * 0.5
-                            : 200,
+                        mainAxisExtent: context.screenHeight * 0.5 <= 200 ? context.screenHeight * 0.5 : 200,
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 20,
                       ),
-                      itemCount: data.size,
+                      itemCount: dataItems.length!,
                       itemBuilder: (BuildContext ctx, index) {
+                        var dataItem = dataItems[index];
                         return InkWell(
                           onTap: () {
                             FocusScope.of(context).unfocus();
                             context.router.push(
                               SearchDetailsRoute(
-                                title: data.docs[index]['name'],
-                                id: data.docs[index].id,
+                                title: dataItem.name!,
+                                id: dataItem.id!.toString(),
                               ),
                             );
                           },
                           child: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(
-                                  data.docs[index]['image'],
-                                ),
+                                image: NetworkImage(dataItem.image!),
                                 fit: BoxFit.cover,
                               ),
                               shape: BoxShape.rectangle,
@@ -104,24 +101,15 @@ class _SearchPageState extends State<SearchPage> {
                                         color: Colors.black.withOpacity(0.3),
                                         spreadRadius: 10,
                                         blurRadius: 5,
-                                        offset: const Offset(
-                                          0,
-                                          7,
-                                        ), // changes position of shadow
+                                        offset: const Offset(0, 7), // changes position of shadow
                                       ),
                                     ],
                                   ),
                                   child: Expanded(
                                     child: Text(
-                                      data.docs[index]['name'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2!
-                                          .copyWith(
-                                            color: cWhiteColor,
-                                          ),
-                                      textScaleFactor:
-                                          ScaleSize.textScaleFactor(context),
+                                      dataItem.name!,
+                                      style: Theme.of(context).textTheme.headline2!.copyWith(color: cWhiteColor),
+                                      textScaleFactor: ScaleSize.textScaleFactor(context),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),

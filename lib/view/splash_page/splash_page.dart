@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/constant/icon_enum.dart';
 import 'package:nectar_ui/core/extensions/string_extensions.dart';
@@ -19,20 +18,23 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
+/// 欢迎页
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
       try {
-        FirebaseAuth.instance.idTokenChanges().listen((User? user) {
-          if (user == null) {
-            context.router.replace(const OnBoardRoute());
-          } else {
-            setState(() {});
-            context.router.replace(const HomeRoute());
-          }
-        });
+        // FirebaseAuth.instance.idTokenChanges().listen((User? user) {
+        //   if (user == null) {
+        //     context.router.replace(const OnBoardRoute());
+        //   } else {
+        //     setState(() {});
+        //     context.router.replace(const HomeRoute());
+        //   }
+        // });
+        setState(() {});
+        context.router.replace(const HomeRoute());
         // ignore: empty_catches
       } on Exception {}
     });

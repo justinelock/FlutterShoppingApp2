@@ -7,6 +7,7 @@ class _StartFabButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   final bool isLastPage;
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(

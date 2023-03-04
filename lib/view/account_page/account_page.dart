@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/extensions/string_extensions.dart';
 import 'package:nectar_ui/core/models/account_card_model.dart';
@@ -11,6 +10,7 @@ import '../../../core/widgets/divider.dart';
 import '../../core/constant/app_icon.dart';
 import '../../core/helper/text_scale_size.dart';
 import '../../core/init/lang/locale_keys.g.dart';
+import '../../core/models/user.dart';
 import '../../core/navigator/app_router.dart';
 import '../../core/widgets/custom_bottom_sheet.dart';
 
@@ -18,27 +18,38 @@ class AccountPage extends StatefulWidget {
   const AccountPage({
     Key? key,
   }) : super(key: key);
+
   @override
   State<AccountPage> createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  // FirebaseAuth auth = FirebaseAuth.instance;
+  late UserEntity user;
   final List<AccountModel> accountCards = AccountModels.accountCards;
-  List<String> accountCardTitles =
-      AccountModels.accountCards.map((e) => e.title).toList();
+  List<String> accountCardTitles = AccountModels.accountCards.map((e) => e.title).toList();
+
   @override
   void initState() {
     super.initState();
+    user = UserEntity(
+      id: 1000,
+      name: 'Manila',
+      description: 'Pasay',
+      displayName: 'Pasay',
+      email: 'manila@pm.me',
+      phoneNumber: '+125235254565',
+      photoURL: 'https://cdn.discordapp.com/avatars/749929780258013235/e0b90b5069508f9f727f51f815ba47bc.png',
+    );
 
-    auth.userChanges().listen((User? user) {
-      try {
-        if (user == null) {
-          context.router.replace(const LoginRoute());
-        } else {}
-        // ignore: empty_catches
-      } on Exception {}
-    });
+    // auth.userChanges().listen((User? user) {
+    //   try {
+    //     if (user == null) {
+    //       context.router.replace(const LoginRoute());
+    //     } else {}
+    //     // ignore: empty_catches
+    //   } on Exception {}
+    // });
   }
 
   @override
@@ -67,8 +78,9 @@ class _AccountPageState extends State<AccountPage> {
                       decoration: BoxDecoration(
                         color: cWhiteColor,
                         borderRadius: BorderRadius.circular(32),
-                        image: const DecorationImage(
-                          image: AssetImage("assets/images/png/ben.jpg"),
+                        image: DecorationImage(
+                          // image: AssetImage("assets/images/png/ben.jpg"),
+                          image: NetworkImage(user.photoURL!),
                           fit: BoxFit.cover,
                         ),
                       )),
@@ -82,7 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                       Row(
                         children: [
                           Text(
-                            "Hüseyin Şahinli",
+                            user.name!,
                             style: Theme.of(context).textTheme.headline1,
                             textScaleFactor: ScaleSize.textScaleFactor(context),
                           ),
@@ -91,8 +103,7 @@ class _AccountPageState extends State<AccountPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProfileEditPage(),
+                                    builder: (context) => const ProfileEditPage(),
                                   ));
                             },
                             icon: IconEnums.pencil.toImage,
@@ -100,7 +111,8 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                       Text(
-                        auth.currentUser!.email.toString(),
+                        user?.email ?? '',
+                        // auth.currentUser!.email.toString(),
                         textScaleFactor: ScaleSize.textScaleFactor(context),
                         style: Theme.of(context).textTheme.subtitle1,
                       ),

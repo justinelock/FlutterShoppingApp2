@@ -5,10 +5,10 @@ import '../constant/app_constant.dart';
 import '../padding/app_padding.dart';
 
 class AddressCard extends StatelessWidget {
-  final String addresTitle;
+  final String addressTitle;
   final String address;
   const AddressCard(
-      {Key? key, required this.addresTitle, required this.address})
+      {Key? key, required this.addressTitle, required this.address})
       : super(key: key);
 
   @override
@@ -49,7 +49,7 @@ class AddressCard extends StatelessWidget {
               child: Padding(
                 padding: const AppPadding.allLow(),
                 child: Text(
-                  addresTitle,
+                  addressTitle,
                   style: Theme.of(context).textTheme.headline3!.copyWith(
                         color: Colors.white,
                       ),

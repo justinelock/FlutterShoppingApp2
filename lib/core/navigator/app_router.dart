@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/view/account_page/transaction_page.dart';
 import 'package:nectar_ui/view/filters_page/filters_page.dart';
@@ -18,6 +17,8 @@ import '../../view/onboarding_page/view/onboard_view.dart';
 import '../../view/search_page/search_page.dart';
 import '../../view/shop_page/components/see_all_page.dart';
 import '../models/account_card_model.dart';
+import '../models/category_product.dart';
+import '../models/query_snapshot.dart';
 
 part 'app_router.gr.dart';
 
@@ -89,7 +90,6 @@ part 'app_router.gr.dart';
     ),
   ],
 )
-
 // extend the generated private router
 class AppRouter extends _$AppRouter {}
 

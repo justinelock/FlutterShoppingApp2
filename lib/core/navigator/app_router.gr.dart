@@ -19,7 +19,9 @@ class _$AppRouter extends RootStackRouter {
   final Map<String, PageFactory> pagesMap = {
     OnBoardRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: const OnBoardPage());
+        routeData: routeData,
+        child: const OnBoardPage(),
+      );
     },
     SplashRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
@@ -186,7 +188,7 @@ class SearchDetailsRouteArgs {
 /// generated route for
 /// [ProductDetailsPage]
 class ProductDetailsRoute extends PageRouteInfo<ProductDetailsRouteArgs> {
-  ProductDetailsRoute({Key? key, required QueryDocumentSnapshot<Object?> data})
+  ProductDetailsRoute({Key? key, required CategoryProduct data})
       : super(ProductDetailsRoute.name,
             path: ':id', args: ProductDetailsRouteArgs(key: key, data: data));
 
@@ -198,7 +200,7 @@ class ProductDetailsRouteArgs {
 
   final Key? key;
 
-  final QueryDocumentSnapshot<Object?> data;
+  final CategoryProduct data;
 
   @override
   String toString() {

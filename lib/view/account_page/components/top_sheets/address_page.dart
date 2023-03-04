@@ -43,11 +43,11 @@ class AddressPage extends StatelessWidget {
               spaceHeight: 10,
               children: [
                 AddressCard(
-                  addresTitle: 'Home',
+                  addressTitle: 'Home',
                   address: 'Dr.Sadık Ahmet Sk. No:59 Daire:9\nİstanbul, Turkey',
                 ),
                 AddressCard(
-                  addresTitle: 'Work',
+                  addressTitle: 'Work',
                   address: 'Dr.Sadık Ahmet Sk. No:59 Daire:9\nİstanbul, Turkey',
                 ),
               ],

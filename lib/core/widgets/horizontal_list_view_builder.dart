@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nectar_ui/core/extensions/context_extensions.dart';
@@ -13,10 +12,13 @@ import '../constant/icon_enum.dart';
 import '../helper/db_helper.dart';
 import '../helper/text_scale_size.dart';
 import '../models/cart_model.dart';
+import '../models/category_product.dart';
+import '../models/query_snapshot.dart';
 import '../providers/cart_provider.dart';
 
 class HorizontalListView extends StatefulWidget {
-  final QuerySnapshot data;
+  final QuerySnapshot<CategoryProduct> data;
+
   const HorizontalListView({Key? key, required this.data}) : super(key: key);
 
   @override
@@ -25,6 +27,7 @@ class HorizontalListView extends StatefulWidget {
 
 class _HorizontalListViewState extends State<HorizontalListView> {
   DBHelper? dbHelper = DBHelper();
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
@@ -34,14 +37,14 @@ class _HorizontalListViewState extends State<HorizontalListView> {
         scrollDirection: Axis.horizontal,
         cacheExtent: 250,
         itemExtent: 170,
-        itemCount: widget.data.size,
+        itemCount: node.entities!.length,
         itemBuilder: (context, index) {
-          var dataItems = widget.data.docs[index];
+          var dataItem = node.entities![index];
           return Padding(
             padding: const AppPadding.onlyRight(),
             child: InkWell(
               onTap: () =>
-                  context.router.push(ProductDetailsRoute(data: dataItems)),
+                  context.router.push(ProductDetailsRoute(data: dataItem)),
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
@@ -61,7 +64,7 @@ class _HorizontalListViewState extends State<HorizontalListView> {
                         children: [
                           Image(
                             image: NetworkImage(
-                              dataItems['image'],
+                              dataItem.image!,
                             ),
                             fit: BoxFit.contain,
                             width: context.screenWidth,
@@ -75,7 +78,7 @@ class _HorizontalListViewState extends State<HorizontalListView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    dataItems['name'],
+                                    dataItem.name!,
                                     style:
                                         Theme.of(context).textTheme.subtitle2,
                                     textScaleFactor:
@@ -97,7 +100,7 @@ class _HorizontalListViewState extends State<HorizontalListView> {
                       Positioned(
                         bottom: 0,
                         child: Text(
-                          "\$${dataItems['price']}",
+                          "\$${dataItem.price!}",
                           style: Theme.of(context).textTheme.headline1,
                           textAlign: TextAlign.right,
                           textScaleFactor: ScaleSize.textScaleFactor(context),
@@ -119,25 +122,25 @@ class _HorizontalListViewState extends State<HorizontalListView> {
                               ),
                             ),
                             onPressed: () {
-                              cart.addItemsIndex(dataItems.id.toString());
+                              cart.addItemsIndex(dataItem.id.toString());
 
                               if (!cart.sameItemCheck) {
                                 dbHelper!
                                     .insert(Product(
-                                  id: dataItems.id,
-                                  productId: dataItems.id,
-                                  productName: dataItems['name'].toString(),
-                                  productInitialPrice: double.parse(
-                                      dataItems['price'].toString()),
-                                  productPrice: double.parse(
-                                      dataItems['price'].toString()),
+                                  id: dataItem.id.toString(),
+                                  productId: dataItem.id.toString(),
+                                  productName: dataItem.name!.toString(),
+                                  productInitialPrice:
+                                      double.parse(dataItem.price!.toString()),
+                                  productPrice:
+                                      double.parse(dataItem.price!.toString()),
                                   productStock: 100,
                                   productQuantity: 1,
-                                  productImage: dataItems['image'].toString(),
+                                  productImage: dataItem.image!.toString(),
                                 ))
                                     .then((value) {
-                                  cart.addTotalprice(double.parse(
-                                      dataItems['price'].toString()));
+                                  cart.addTotalprice(
+                                      double.parse(dataItem.price!.toString()));
                                   cart.addCounter();
 
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -168,4 +171,6 @@ class _HorizontalListViewState extends State<HorizontalListView> {
       ),
     );
   }
+
+  QuerySnapshot<CategoryProduct> get node => widget.data;
 }

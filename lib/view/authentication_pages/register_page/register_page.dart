@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -27,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _retypePassword = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  FirebaseAuth auth = FirebaseAuth.instance;
+  // FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ),
+
+              ///
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(
@@ -123,54 +124,27 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 onPressed: () async {
-                  if (_email.text.isNotEmpty &&
-                      _password.text.isNotEmpty &&
-                      _retypePassword.text.isNotEmpty) {
-                    if (_password.text.toString() ==
-                        _retypePassword.text.toString()) {
-                      try {
-                        UserCredential userCredential = await FirebaseAuth
-                            .instance
-                            .createUserWithEmailAndPassword(
-                          email: _email.text.toString(),
-                          password: _password.text.toString(),
-                        );
-                        if (userCredential.user != null) {
-                          context.router.replace(const HomeRoute());
-                        }
-                      } on FirebaseAuthException catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(e.code.toString()),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(e.toString()),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                  if (_email.text.isNotEmpty && _password.text.isNotEmpty && _retypePassword.text.isNotEmpty) {
+                    if (_password.text.toString() ==  _retypePassword.text.toString()) {
+                      // try {
+                      //   // UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      //   //   email: _email.text.toString(),
+                      //   //   password: _password.text.toString(),
+                      //   // );
+                      //   //if (userCredential.user != null) {
+                      //     context.router.replace(const HomeRoute());
+                      //   //}
+                      // } on FirebaseAuthException catch (e) {
+                      //   _buildSnackBar(e.toString());
+                      // } catch (e) {
+                      //   _buildSnackBar(e.toString());
+                      // }
+                      context.router.replace(const HomeRoute());
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              LocaleKeys.auth_signUp_passwordNotMatch.locale),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      _buildSnackBar(LocaleKeys.auth_signUp_passwordNotMatch.locale);
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          LocaleKeys.auth_signUp_fillAllFields.locale,
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    _buildSnackBar(LocaleKeys.auth_signUp_fillAllFields.locale);
                   }
                 },
                 child: Text(
@@ -218,16 +192,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   onPressed: () {
-                    try {
-                      signInWithGoogle();
-                    } on FirebaseAuthException catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(e.code.toString()),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
+                    // try {
+                    //   signInWithGoogle();
+                    // } on FirebaseAuthException catch (e) {
+                    //   _buildSnackBar(e.code.toString());
+                    // }
+                    context.router.replace(const HomeRoute());
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -252,21 +222,30 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _buildSnackBar(String msg, {Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: color ?? Colors.red,
+      ),
     );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  // Future<UserCredential> signInWithGoogle() async {
+  //   // Trigger the authentication flow
+  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //
+  //   // Obtain the auth details from the request
+  //   final GoogleSignInAuthentication? googleAuth =
+  //       await googleUser?.authentication;
+  //
+  //   // Create a new credential
+  //   final credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth?.accessToken,
+  //     idToken: googleAuth?.idToken,
+  //   );
+  //
+  //   // Once signed in, return the UserCredential
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  // }
 }

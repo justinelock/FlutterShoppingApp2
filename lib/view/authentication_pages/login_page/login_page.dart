@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -24,16 +23,17 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  FirebaseAuth auth = FirebaseAuth.instance;
+  // FirebaseAuth auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
-    auth.userChanges().listen((User? user) {
-      if (user == null) {
-      } else {
-        context.router.replace(const HomeRoute());
-      }
-    });
+    // auth.userChanges().listen((User? user) {
+    //   if (user == null) {
+    //   } else {
+    //     context.router.replace(const HomeRoute());
+    //   }
+    // });
+    context.router.replace(const HomeRoute());
   }
 
   @override
@@ -104,18 +104,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 onPressed: () async {
-                  try {
-                    await auth.signInWithEmailAndPassword(
-                        email: _email.text.toString().trimRight(),
-                        password: _password.text.toString());
-                  } on FirebaseAuthException catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(e.code.toString()),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
+                  // try {
+                  //   await auth.signInWithEmailAndPassword(
+                  //       email: _email.text.toString().trimRight(),
+                  //       password: _password.text.toString());
+                  // } on FirebaseAuthException catch (e) {
+                  //   _buildSnackBar(e.code.toString());
+                  // }
+                  context.router.replace(const HomeRoute());
                 },
                 child: Text(
                   LocaleKeys.auth_signIn_title.locale,
@@ -158,16 +154,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onPressed: () {
-                    try {
-                      signInWithGoogle();
-                    } on FirebaseAuthException catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(e.code.toString()),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
+                    // try {
+                    //   signInWithGoogle();
+                    // } on FirebaseAuthException catch (e) {
+                    //   _buildSnackBar(e.code.toString());
+                    // }
+                    context.router.replace(const HomeRoute());
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -192,26 +184,35 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
-    final googleSignIn = GoogleSignIn();
-    await googleSignIn.disconnect().catchError((e, stack) {});
-
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-
-    // handling the exception when cancel sign in
-    if (googleUser == null) return null;
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _buildSnackBar(String msg, {Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: color ?? Colors.red,
+      ),
     );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  // Future<UserCredential?> signInWithGoogle() async {
+  //   final googleSignIn = GoogleSignIn();
+  //   await googleSignIn.disconnect().catchError((e, stack) {});
+  //
+  //   final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+  //
+  //   // handling the exception when cancel sign in
+  //   if (googleUser == null) return null;
+  //
+  //   // Obtain the auth details from the request
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser.authentication;
+  //
+  //   // Create a new credential
+  //   final credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  // }
 
   // Future<Future<UserCredential>?> signInWithGoogle() async {
   //   // Trigger the authentication flow

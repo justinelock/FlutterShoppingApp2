@@ -10,6 +10,7 @@ import '../../../core/padding/app_padding.dart';
 import '../../../../core/widgets/onboard_cart.dart';
 import '../viewmodel/onboard_model.dart';
 import '../viewmodel/tab_indicator.dart';
+
 part './module/start_fab_button.dart';
 
 class OnBoardPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
 
   // ---xx
   ValueNotifier<bool> isBackEnable = ValueNotifier(false);
+
   // --xx
 
   void _incrementAndChange([int? value]) {
@@ -71,15 +73,20 @@ class _OnBoardPageState extends State<OnBoardPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TabIndicator(selectedIndex: _selectedIndex),
+
+                    /// 欢迎页 开始按钮 进去注册/登录
                     _StartFabButton(
-                        isLastPage: _isLastPage,
-                        onPressed: () {
-                          _isLastPage
-                              ? context.router.replace(const LoginRoute())
-                              : controller.nextPage(
-                                  curve: Curves.easeInOut,
-                                  duration: const Duration(milliseconds: 500));
-                        }),
+                      isLastPage: _isLastPage,
+                      onPressed: () {
+                        context.router.replace(const HomeRoute());
+                        // _isLastPage
+                        //     ? context.router.replace(const LoginRoute())
+                        //     : controller.nextPage(
+                        //         curve: Curves.easeInOut,
+                        //         duration: const Duration(milliseconds: 500),
+                        //       );
+                      },
+                    ),
                   ],
                 )
               ],

@@ -18,6 +18,7 @@ class AccountModel {
   final Icon leading;
   final Widget? widget;
   bool? bottomSheet;
+
   AccountModel(this.title, this.leading, [this.widget, this.bottomSheet]);
 }
 

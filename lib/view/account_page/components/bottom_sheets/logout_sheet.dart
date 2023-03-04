@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/extensions/string_extensions.dart';
 import 'package:nectar_ui/core/init/lang/locale_keys.g.dart';
@@ -34,7 +33,9 @@ class LogoutSheet extends StatelessWidget {
                   padding: const AppPadding.all(),
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
-                onPressed: () => FirebaseAuth.instance.signOut(),
+                onPressed: () {
+                  // FirebaseAuth.instance.signOut();
+                },
                 child: Text(
                   LocaleKeys.account_logout_yes.locale,
                   style: Theme.of(context).textTheme.headline1,

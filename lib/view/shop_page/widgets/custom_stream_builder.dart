@@ -1,12 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/view/shop_page/widgets/custom_title_and_button.dart';
 
+import '../../../core/models/category_product.dart';
+import '../../../core/models/query_snapshot.dart';
 import '../../../core/widgets/horizontal_list_view_builder.dart';
 
 class CustomStreamBuilder extends StatelessWidget {
   final String title;
-  final Stream<QuerySnapshot> stream;
+  final Stream<QuerySnapshot<CategoryProduct>> stream;
+
   const CustomStreamBuilder({
     Key? key,
     required this.stream,
@@ -15,9 +17,9 @@ class CustomStreamBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot<CategoryProduct>>(
         stream: stream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<CategoryProduct>> snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nectar_ui/core/constant/app_border_radius.dart';
@@ -9,11 +8,14 @@ import 'package:nectar_ui/core/navigator/app_router.dart';
 import '../../../core/constant/app_constant.dart';
 import '../../../core/constant/icon_enum.dart';
 import '../../../core/helper/text_scale_size.dart';
+import '../../../core/models/category_product.dart';
+import '../../../core/models/query_snapshot.dart';
 import '../../../core/padding/app_padding.dart';
 
 class SeeAllPage extends StatefulWidget {
   final QuerySnapshot data;
   final String title;
+
   const SeeAllPage({Key? key, required this.title, required this.data})
       : super(key: key);
 
@@ -34,19 +36,19 @@ class _SeeAllPageState extends State<SeeAllPage> {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: context.screenWidth * 0.5,
-            mainAxisExtent: context.screenHeight * 0.5 <= 270
-                ? context.screenHeight * 0.5
-                : 270,
+            mainAxisExtent: context.screenHeight * 0.5 <= 270 ? context.screenHeight * 0.5 : 270,
             crossAxisSpacing: 20,
             mainAxisSpacing: 20,
           ),
-          itemCount: widget.data.size,
+          itemCount: node.size,
           itemBuilder: (BuildContext ctx, index) {
-            var dataItems = widget.data.docs[index];
+            CategoryProduct dataItem = (node.entities![index]) as CategoryProduct;
             return InkWell(
               onTap: () {
                 FocusScope.of(context).unfocus();
-                context.router.push(ProductDetailsRoute(data: dataItems));
+                if (dataItem != null) {
+                  context.router.push(ProductDetailsRoute(data: dataItem));
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -67,7 +69,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                           borderRadius: AppBorderRadius.topLeftRight20,
                           child: Image(
                             image: NetworkImage(
-                              dataItems['image'],
+                              dataItem.image!,
                             ),
                             fit: BoxFit.cover,
                             width: context.screenWidth,
@@ -82,7 +84,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  dataItems['name'],
+                                  dataItem.name!,
                                   style: Theme.of(context).textTheme.subtitle2,
                                   textScaleFactor:
                                       ScaleSize.textScaleFactor(context),
@@ -102,7 +104,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                     Positioned(
                       bottom: 0,
                       child: Text(
-                        "\$${dataItems['price']}",
+                        "\$${dataItem.price!}",
                         style: Theme.of(context).textTheme.headline1,
                         textAlign: TextAlign.right,
                         textScaleFactor: ScaleSize.textScaleFactor(context),
@@ -141,4 +143,6 @@ class _SeeAllPageState extends State<SeeAllPage> {
       ),
     );
   }
+
+  QuerySnapshot get node => widget.data;
 }

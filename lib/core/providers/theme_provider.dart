@@ -3,7 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
   String currentTheme = 'system';
+
   String get currentThemeString => currentTheme;
+
   ThemeMode get themeMode {
     if (currentTheme == 'light') {
       return ThemeMode.light;

@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/constant/app_border_radius.dart';
 import 'package:nectar_ui/core/constant/app_constant.dart';
@@ -14,9 +13,10 @@ import 'package:nectar_ui/core/widgets/my_custom_column.dart';
 
 import '../../../core/constant/icon_enum.dart';
 import '../../core/helper/text_scale_size.dart';
+import '../../core/models/category_product.dart';
 
 class ProductDetailsPage extends StatefulWidget {
-  final QueryDocumentSnapshot data;
+  final CategoryProduct data;
 
   const ProductDetailsPage({Key? key, required this.data}) : super(key: key);
 
@@ -34,7 +34,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.data['name'],
+          widget.data.name!,
         ),
         actions: [
           IconButton(
@@ -59,7 +59,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               padding: const AppPadding.symmetric(),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(widget.data['image']),
+                  image: NetworkImage(widget.data.image!),
                   opacity: 0.9,
                   fit: BoxFit.cover,
                 ),
@@ -71,7 +71,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     Radius.circular(15),
                   ),
                   child: Image.network(
-                    widget.data['image'],
+                    widget.data.image!,
                     fit: BoxFit.cover,
                     width: context.screenWidth / 2,
                   ),
@@ -87,7 +87,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.data['name'],
+                        widget.data.name!,
                         style: Theme.of(context).textTheme.headline1,
                         textScaleFactor: ScaleSize.textScaleFactor(context),
                       ),
@@ -99,7 +99,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             textScaleFactor: ScaleSize.textScaleFactor(context),
                           ),
                           Text(
-                            "\$${widget.data['price']}",
+                            "\$${widget.data.price!}",
                             style: Theme.of(context).textTheme.headline3,
                             textScaleFactor: ScaleSize.textScaleFactor(context),
                           ),

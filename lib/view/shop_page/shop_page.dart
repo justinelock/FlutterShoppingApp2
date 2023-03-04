@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/extensions/double_extensions.dart';
 import 'package:nectar_ui/core/padding/app_padding.dart';
@@ -8,6 +7,8 @@ import 'package:nectar_ui/view/shop_page/widgets/custom_stream_builder.dart';
 import '../../../core/constant/icon_enum.dart';
 import 'package:nectar_ui/core/extensions/string_extensions.dart';
 
+import '../../core/models/banner.dart';
+import '../../core/models/query_snapshot.dart';
 import '../../core/services/firestore.dart';
 import '../../core/init/lang/locale_keys.g.dart';
 
@@ -19,7 +20,16 @@ class ShopPage extends StatefulWidget {
 }
 
 class _ShopPageState extends State<ShopPage> {
-  var _currentIndex = 0;
+  //var _currentIndex = 0;
+
+  ValueNotifier<int> valueNotifier = ValueNotifier(0);
+
+  @override
+  void dispose() {
+    valueNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +48,7 @@ class _ShopPageState extends State<ShopPage> {
                   Padding(
                     padding: const AppPadding.onlyLeft(),
                     child: Text(
-                      "Istanbul, Zeytinburnu",
+                      "Pasay",
                       style: Theme.of(context).textTheme.headline2,
                     ),
                   )
@@ -53,10 +63,10 @@ class _ShopPageState extends State<ShopPage> {
           padding: const AppPadding.symmetric(),
           child: Column(
             children: [
-              StreamBuilder<QuerySnapshot>(
-                  stream: FireCloudStore.banner,
+              StreamBuilder<QuerySnapshot<Banners>>(
+                  stream: FireCloudStore.banner(),
                   builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                      AsyncSnapshot<QuerySnapshot<Banners>> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     }
@@ -65,42 +75,52 @@ class _ShopPageState extends State<ShopPage> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    final data = snapshot.requireData;
+                    //final data = snapshot.requireData;
+                    final List<Banners> dataItems =
+                        snapshot.requireData.entities!;
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CarouselSlider.builder(
-                          itemCount: data.size,
+                          itemCount: dataItems.length,
                           options: customCarouselOptions(),
                           itemBuilder: (ctx, index, realIdx) {
+                            Banners dataItem = dataItems[index];
                             return InkWell(
                               onTap: () {},
                               child: Image.network(
-                                data.docs[index]['image'],
+                                dataItem.image!,
                                 height: 100,
                                 fit: BoxFit.fitWidth,
                               ),
                             );
                           },
                         ),
-                        CustomDots(
-                          dataSize: data.size,
-                          currentIndex: _currentIndex,
+
+                        /// banner dot
+                        ValueListenableBuilder(
+                          valueListenable: valueNotifier,
+                          builder: (BuildContext context, int value, Widget? child) {
+                            return CustomDots(
+                              dataSize: dataItems.length,
+                              currentIndex: value,
+                            );
+                          },
                         ),
                       ],
                     );
                   }),
               CustomStreamBuilder(
                 title: LocaleKeys.shop_exclusiveOffer.locale,
-                stream: FireCloudStore.exclusive,
+                stream: FireCloudStore.exclusive(),
               ),
               CustomStreamBuilder(
                 title: LocaleKeys.shop_topSeller.locale,
-                stream: FireCloudStore.topSeller,
+                stream: FireCloudStore.topSeller(),
               ),
               CustomStreamBuilder(
                 title: LocaleKeys.shop_groceries.locale,
-                stream: FireCloudStore.groceries,
+                stream: FireCloudStore.groceries(),
               ),
               20.0.sizedBoxOnlyHeight,
             ],
@@ -117,12 +137,14 @@ class _ShopPageState extends State<ShopPage> {
       autoPlayInterval: const Duration(seconds: 5),
       autoPlayAnimationDuration: const Duration(milliseconds: 800),
       pauseAutoPlayOnTouch: true,
-      viewportFraction: 0.75,
+      viewportFraction: 1,
+      // 0.75
       height: 100,
       enlargeCenterPage: true,
       onPageChanged: (index, reason) {
-        _currentIndex = index;
-        setState(() {});
+        //_currentIndex = index;
+        valueNotifier.value = index;
+        //setState(() {});
       },
     );
   }

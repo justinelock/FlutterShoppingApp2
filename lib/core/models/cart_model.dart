@@ -9,6 +9,7 @@ class Product {
   final int? productStock;
   final int? productQuantity;
   final String? productImage;
+
   Product({
     required this.id,
     required this.productId,
