@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:nectar_ui/core/constant/app_border_radius.dart';
 import 'package:nectar_ui/core/constant/app_icon.dart';
@@ -63,21 +62,11 @@ class _HomePageState extends State<HomePage> {
                           ? AppIcons.cart
                           : Center(
                               child: Badge(
-                                badgeContent: Text(
+                                label: Text(
                                   "${value.counter}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
+                                  style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white,fontSize: 12,),
+                                  textScaleFactor: ScaleSize.textScaleFactor(context),
                                 ),
-                                animationType: BadgeAnimationType.scale,
-                                animationDuration:
-                                    const Duration(milliseconds: 600),
                                 child: AppIcons.cart,
                               ),
                             );
