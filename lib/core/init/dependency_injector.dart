@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nectar_ui/core/providers/cart_provider.dart';
+import 'package:nectar_ui/core/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../providers/cart_provider.dart';
-import '../../providers/theme_provider.dart';
 
 class DependencyInjector {
   static DependencyInjector? _instance;
